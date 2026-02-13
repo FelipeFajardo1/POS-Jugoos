@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jugoos - Apertura de Caja</title>
+  <link rel="stylesheet" href="../styles/apertura_caja.css" />
+</head>
+<body>
+
+  <header class="header">
+    <h1>Apertura de Caja</h1>
+  </header>
+
+  <main class="container">
+    <form id="formCaja" class="card-layout">
+      <div class="card-left">
+        <div class="field">
+          <label>Empleado</label>
+          <input type="text" id="empleado" readonly />
+        </div>
+
+        <div class="field">
+          <label>Monto inicial</label>
+          <input type="text" id="monto" readonly required />
+        </div>
+
+        <div class="numpad">
+          <button type="button" class="numpad-btn" data-value="7">7</button>
+          <button type="button" class="numpad-btn" data-value="8">8</button>
+          <button type="button" class="numpad-btn" data-value="9">9</button>
+          <button type="button" class="numpad-btn" data-value="4">4</button>
+          <button type="button" class="numpad-btn" data-value="5">5</button>
+          <button type="button" class="numpad-btn" data-value="6">6</button>
+          <button type="button" class="numpad-btn" data-value="1">1</button>
+          <button type="button" class="numpad-btn" data-value="2">2</button>
+          <button type="button" class="numpad-btn" data-value="3">3</button>
+          <button type="button" class="numpad-btn" data-value="0">0</button>
+          <button type="button" class="numpad-btn" data-value="00">00</button>
+          <button type="button" class="numpad-btn triple-zero" data-value="000">000</button>
+          <button type="button" class="numpad-btn clear-btn" data-action="clear">C</button>
+          <button type="button" class="numpad-btn back-btn btn-wide" data-action="back">← Borrar</button>
+        </div>
+      </div>
+
+      <div class="card-right">
+        <button type="submit" class="btn-primary-big">
+          💰<br/>Abrir<br/>Caja
+        </button>
+      </div>
+    </form>
+  </main>
+
+
+  <script src="../logout.js"></script>
+  <script src="../renderer/apertura_caja.js"></script>
+</body>
+</html>

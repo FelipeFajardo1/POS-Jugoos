@@ -1,0 +1,21 @@
+{
+  "name": "jugoos-pos",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "electron": "^40.0.0",
+    "electron-rebuild": "^3.2.9"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.6.2"
+  }
+}

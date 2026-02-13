@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jugoos - Administrador</title>
+  <style>
+    :root {
+      --morado:#6a1b9a;
+      --morado-osc:#4a0e6d;
+      --verde:#2ecc71;
+      --rojo:#e74c3c;
+      --gris:#f5f5f5;
+    }
+    * { box-sizing: border-box; font-family: Arial, sans-serif; }
+    body { margin:0; background:var(--gris); color:#333; height:100vh; display:flex; flex-direction:column; }
+    header { background:var(--morado); color:white; padding:12px 20px; display:flex; justify-content:space-between; align-items:center; }
+    header h1 { margin:0; font-size:20px; }
+    main { flex:1; display:grid; grid-template-columns: 2fr 1.2fr; gap:12px; padding:12px; overflow:hidden; }
+    .panel { background:white; border-radius:10px; padding:12px; box-shadow:0 2px 6px rgba(0,0,0,0.1); display:flex; flex-direction:column; overflow:hidden; }
+    .panel h2 { margin:0 0 10px 0; color:var(--morado); font-size:16px; }
+    .secciones-list, .productos-list, .jornadas-list { flex:1; overflow:auto; border:1px solid #e5e5e5; border-radius:8px; padding:8px; }
+    .item-row { display:flex; align-items:center; justify-content:space-between; padding:6px 8px; border-bottom:1px solid #f0f0f0; }
+    .item-row:last-child { border-bottom:none; }
+    .badge { padding:2px 6px; border-radius:6px; font-size:11px; }
+    .badge.activo { background:#e8f5e9; color:#27ae60; }
+    .badge.inactivo { background:#fdecea; color:#e74c3c; }
+    .btn { border:none; border-radius:6px; padding:6px 10px; cursor:pointer; font-weight:bold; font-size:12px; }
+    .btn-primary { background:var(--morado); color:white; }
+    .btn-secondary { background:#bdc3c7; color:white; }
+    .btn-danger { background:var(--rojo); color:white; }
+    .btn-ghost { background:transparent; color:var(--morado); }
+    .form-inline { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px; }
+    .form-inline input { padding:6px 8px; border:1px solid #ddd; border-radius:6px; font-size:12px; }
+    .price-input { width:90px; margin-right:6px; padding:4px 6px; border:1px solid #ddd; border-radius:6px; font-size:12px; }
+    .section-title { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+    .muted { color:#777; font-size:12px; }
+    .jornadas-select { display:flex; gap:8px; margin-bottom:8px; }
+    select { padding:6px 8px; border:1px solid #ccc; border-radius:6px; }
+    footer { padding:10px; display:flex; justify-content:flex-end; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Panel Administrador - Jugoos</h1>
+    <div id="adminNombre" class="muted"></div>
+  </header>
+
+  <main>
+    <section class="panel" id="panelProductos">
+      <div class="section-title">
+        <h2>Secciones y Productos</h2>
+        <div class="muted">Gestione secciones, precios y estado activo</div>
+      </div>
+
+      <div class="form-inline" id="formNuevaSeccion">
+        <input type="text" id="seccionNombre" placeholder="Nombre sección" />
+        <input type="text" id="seccionIcono" placeholder="Emoji (opcional)" style="width:110px" />
+        <button class="btn btn-primary" id="btnCrearSeccion">Crear sección</button>
+      </div>
+
+      <div class="secciones-list" id="listaSecciones"></div>
+
+      <hr style="margin:10px 0; border:none; border-top:1px solid #eee;" />
+
+      <div class="section-title">
+        <h2 id="tituloProductos">Productos</h2>
+        <span class="muted" id="infoSeccion"></span>
+      </div>
+      <div class="form-inline" id="formNuevoProducto">
+        <input type="text" id="prodNombre" placeholder="Nombre producto" />
+        <input type="number" id="prodPrecio" placeholder="Precio" min="0" step="1" />
+        <button class="btn btn-secondary" id="btnSeleccionarImagen">📷 Imagen</button>
+        <span id="imgNombreSeleccionado" class="muted" style="max-width:100px;overflow:hidden;text-overflow:ellipsis;"></span>
+        <input type="hidden" id="prodImagen" />
+        <button class="btn btn-primary" id="btnCrearProducto">Crear producto</button>
+      </div>
+      <div class="productos-list" id="listaProductos"></div>
+
+      <hr style="margin:10px 0; border:none; border-top:1px solid #eee;" />
+
+      <div class="section-title" style="cursor:pointer;" id="toggleBasesHeader">
+        <h2>🖼️ Imágenes de Bases <span id="toggleBasesIcon">▶</span></h2>
+        <span class="muted">Click para expandir</span>
+      </div>
+      <div class="bases-list" id="listaBases" style="display:none;"></div>
+    </section>
+
+    <section class="panel" id="panelJornadas">
+      <div class="section-title">
+        <h2>Historial de Jornadas</h2>
+        <span class="muted">Filtra por año / mes / día</span>
+      </div>
+      <div class="jornadas-select">
+        <select id="selAnio">
+          <option value="">Año</option>
+        </select>
+        <select id="selMes">
+          <option value="">Mes</option>
+        </select>
+        <select id="selDia">
+          <option value="">Día</option>
+        </select>
+      </div>
+      <div class="jornadas-list" id="listaJornadas"></div>
+    </section>
+  </main>
+
+  <footer>
+    <button class="btn btn-secondary" id="logoutBtn">Cerrar sesión</button>
+  </footer>
+
+  <script src="../renderer/admin.js"></script>
+  <script src="../logout.js"></script>
+</body>
+</html>

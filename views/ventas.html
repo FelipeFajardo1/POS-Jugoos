@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Jugoos POS - Ventas</title>
+  <link rel="stylesheet" href="../styles/ventas.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+    <img src="../assets/logo.png" alt="Jugoos" class="logo">
+    <h1>Ventas - Jugoos</h1>
+
+    <button id="cerrarCajaBtn" class="btn-cerrar">
+      Cerrar caja
+    </button>
+  </header>
+
+  <!-- CONTENIDO -->
+  <div class="container">
+
+    <!-- FACTURA -->
+    <aside class="factura">
+      <h2>Factura</h2>
+
+      <div id="factura"></div>
+
+      <div class="botones-especiales">
+        <button id="btnDomicilio" class="btn-especial btn-domicilio">🛵 Domicilio +$4.000</button>
+        <button id="btnDesechable" class="btn-especial btn-desechable">🥤 Desechable +$1.000</button>
+      </div>
+
+      <div class="total">
+        Total: $<span id="total">0</span>
+      </div>
+
+      <button id="cobrarBtn" class="btn-cobrar">
+        Cobrar
+      </button>
+    </aside>
+
+    <!-- PRODUCTOS -->
+    <main class="productos">
+      <h2 class="titulo-menu">MENÚ PRINCIPAL</h2>
+      <div id="secciones" class="secciones-grid"></div>
+      <div id="listaProductos" class="lista-productos"></div>
+    </main>
+
+  </div>
+
+  <!-- MODAL CIERRE DE CAJA -->
+  <div id="modalCierre" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <h2>Resumen de Cierre de Caja</h2>
+
+      <!-- Resumen Financiero -->
+      <div class="resumen-financiero">
+        <div class="item-resumen dinero-caja">
+          <span class="label">Dinero en Caja:</span>
+          <span class="valor" id="dineroEnCajaVal">$0</span>
+        </div>
+        <div class="item-resumen">
+          <span class="label">Monto Inicial:</span>
+          <span class="valor" id="montoInicialVal">$0</span>
+        </div>
+        <div class="item-resumen total-ganancias">
+          <span class="label">Ganancias del Día:</span>
+          <span class="valor" id="gananciasVal">$0</span>
+        </div>
+      </div>
+
+      <!-- Historial de Ventas -->
+      <div class="historial-ventas">
+        <h3>Historial de Pedidos</h3>
+        <div id="listaVentas" class="lista-ventas-scroll">
+          <p>Cargando ventas...</p>
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="botones-cierre">
+        <button id="btnCerrarSesion" class="btn-cerrar-sesion">Cerrar Sesión</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RENDERER -->
+  <script src="../renderer/ventas.js"></script>
+  <script src="../renderer/cerrarCaja.js"></script>
+  <script src="../logout.js"></script>
+</body>
+</html>
