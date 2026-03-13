@@ -1,8 +1,7 @@
 const Database = require("better-sqlite3");
+const db = require("./db"); // Importamos la conexión única
 
 function initDatabase() {
-  const db = new Database("database/jugoos.db");
-
   // Asegura integridad referencial
   db.pragma('foreign_keys = ON');
 
