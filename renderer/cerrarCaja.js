@@ -25,6 +25,11 @@ window.addEventListener('DOMContentLoaded', () => {
       // Mostrar modal con resumen
       mostrarResumenCierre(resCierre, resVentas);
 
+      // Imprimir comprobante de arqueo
+      await window.caja.imprimirArqueo({
+        ganancias: resCierre.ganancias,
+      });
+
     } catch (err) {
       console.error(err);
       alert('Error al cerrar la caja');

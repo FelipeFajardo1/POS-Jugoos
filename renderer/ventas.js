@@ -203,36 +203,29 @@ function agregarProducto(producto) {
     return;
   }
 
-  const item = factura.find(p => p.id === producto.id && p.nombre === nombreFactura);
-
-  if (item) {
-    item.cantidad++;
-  } else {
-    factura.push({
-      id: producto.id,
-      nombre: nombreFactura,
-      precio: producto.precio,
-      cantidad: 1
-    });
-  }
+  // Ya no agrupamos los productos automáticamente. 
+  // Siempre agregamos como un ítem nuevo (a menos que usen los botones + / - visualmente)
+  factura.push({
+    id: producto.id,
+    nombre: nombreFactura,
+    precio: producto.precio,
+    cantidad: 1,
+    uuid: Date.now() + Math.random() // Unique ID
+  });
 
   renderFactura();
 }
 
 function agregarProductoConBase(producto, baseElegida) {
   const nombreFactura = `${producto.nombre} (${baseElegida})`;
-  const item = factura.find(p => p.id === producto.id && p.nombre === nombreFactura);
 
-  if (item) {
-    item.cantidad++;
-  } else {
-    factura.push({
-      id: producto.id,
-      nombre: nombreFactura,
-      precio: producto.precio,
-      cantidad: 1
-    });
-  }
+  factura.push({
+    id: producto.id,
+    nombre: nombreFactura,
+    precio: producto.precio,
+    cantidad: 1,
+    uuid: Date.now() + Math.random() // Unique ID
+  });
 
   renderFactura();
 }
@@ -302,16 +295,14 @@ function initModalFrutas() {
     if (frutasSeleccionadas.length === frutasRequeridas && modalFrutasProducto) {
       const nombreFactura = `${modalFrutasProducto.nombre} (${frutasSeleccionadas.join(', ')})`;
       const item = factura.find(p => p.id === modalFrutasProducto.id && p.nombre === nombreFactura);
-      if (item) {
-        item.cantidad++;
-      } else {
-        factura.push({
-          id: modalFrutasProducto.id,
-          nombre: nombreFactura,
-          precio: modalFrutasProducto.precio,
-          cantidad: 1
-        });
-      }
+      // Evitar que se sumen:
+      factura.push({
+        id: modalFrutasProducto.id,
+        nombre: nombreFactura,
+        precio: modalFrutasProducto.precio,
+        cantidad: 1,
+        uuid: Date.now() + Math.random() // Unique ID to avoid grouping
+      });
       renderFactura();
     }
     cerrarModalFrutas();
@@ -415,16 +406,13 @@ function initModalParfait() {
       const descripcion = parfaitSeleccionadas.join(' + ');
       const nombreFactura = `${modalParfaitProducto.nombre} (${descripcion})`;
       const item = factura.find(p => p.id === modalParfaitProducto.id && p.nombre === nombreFactura);
-      if (item) {
-        item.cantidad++;
-      } else {
-        factura.push({
-          id: modalParfaitProducto.id,
-          nombre: nombreFactura,
-          precio: modalParfaitProducto.precio,
-          cantidad: 1
-        });
-      }
+      factura.push({
+        id: modalParfaitProducto.id,
+        nombre: nombreFactura,
+        precio: modalParfaitProducto.precio,
+        cantidad: 1,
+        uuid: Date.now() + Math.random() // Unique ID to avoid grouping
+      });
       renderFactura();
     }
     cerrarModalParfait();
@@ -609,12 +597,35 @@ async function cobrarVenta() {
     return;
   }
 
+  let itemsParaRegistrar = [...factura];
+
+  if (domicilioActivo) {
+    itemsParaRegistrar.push({ id: null, nombre: 'Domicilio', precio: 4000, cantidad: 1 });
+  }
+  if (desechableActivo) {
+    itemsParaRegistrar.push({ id: null, nombre: 'Desechable', precio: 1000, cantidad: 1 });
+  }
+
   try {
-    const res = await window.ventas.registrar(factura);
+    const res = await window.ventas.registrar({ items: itemsParaRegistrar });
 
     if (!res.success) {
       alert(res.message || 'Error al registrar venta');
       return;
+    }
+
+    // Enviar a imprimir (no bloquea si falla, solo intentará imprimir al default)
+    try {
+      const printRes = await window.ventas.imprimirFactura({
+        items: itemsParaRegistrar, // enviamos con recargos
+        total: res.total,
+        ventaId: res.ventaId
+      });
+      if (!printRes.success) {
+        console.warn('Alerta de impresión:', printRes.message);
+      }
+    } catch (printErr) {
+      console.error('Error al intentar imprimir:', printErr);
     }
 
     alert(`Venta registrada correctamente\nTotal: $${res.total.toLocaleString('es-CO')}`);

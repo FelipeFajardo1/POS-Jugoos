@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Arqueo de Caja</title>
+  <style>
+    @page { margin: 0; }
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 11px;
+      margin: 0;
+      padding: 0;
+      width: 78mm;
+    }
+    .ticket {
+      padding: 5mm;
+    }
+    .center {
+      text-align: center;
+    }
+    .title {
+      font-weight: bold;
+    }
+    .separator {
+      border-top: 1px dashed #000;
+      margin: 5px 0;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2px;
+    }
+    .row span:first-child {
+      white-space: nowrap;
+    }
+    .spacer {
+      margin-top: 15px;
+    }
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
+    .moneda {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ticket">
+    <div class="center">
+      <div class="title">JUGOOS MOCOA</div>
+      <div>Wilson Rene Fajardo Calvache.</div>
+      <div>Nit: 18130163-5</div>
+      <div>Avenida Colombia</div>
+      <div>Mocoa</div>
+      <div>Teléfono: 3209787169</div>
+    </div>
+
+    <div class="separator spacer"></div>
+    <div class="center title">ARQUEO DE CAJA</div>
+    <div class="separator"></div>
+
+    <div class="row">
+      <span>CAJA :</span>
+      <span>{{CAJA}}</span>
+    </div>
+    <div class="row">
+      <span>LOTE :</span>
+      <span>{{LOTE}}</span>
+    </div>
+    <div class="row">
+      <span>FECHA:</span>
+      <span>{{FECHA}}</span>
+    </div>
+    <div class="row">
+      <span>HORA :</span>
+      <span>{{HORA}}</span>
+    </div>
+
+    <div class="spacer"></div>
+    
+    <div class="total-row">
+      <span>GANANCIAS DEL DIA....:</span>
+      <span>{{GANANCIAS}}</span>
+    </div>
+
+    <div class="center moneda">
+      <span>Moneda: Colombia</span>
+    </div>
+    
+    <div class="separator"></div>
+
+  </div>
+
+</body>
+</html>

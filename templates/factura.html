@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page { margin: 0; }
+    body { font-family: monospace; font-size: 13px; margin: 0; padding: 10px; width: 70mm; color: #000; text-transform: uppercase; }
+    .center { text-align: center; }
+    .bold { font-weight: bold; }
+    .line { border-bottom: 1px dashed #000; margin: 5px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 5px; margin-bottom: 5px;}
+    th { text-align: left; border-bottom: 1px solid #000; padding-bottom: 2px; }
+    td { text-align: left; padding: 2px 0; }
+    .right { text-align: right; }
+    .header-text { margin-bottom: 10px; line-height: 1.3; }
+    .info-grid { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .info-col { width: 48%; }
+    .totals-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+    .totals-table td { padding: 2px 0; }
+    .tot-row { font-size: 18px; font-weight: bold; padding-top: 5px; }
+  </style>
+</head>
+<body>
+  <div class="center header-text">
+    <div class="bold" style="font-size: 16px;">JUGOOS MOCOA</div>
+    Wilson Rene Fajardo Calvache.<br>
+    Nit: 18130163-5<br>
+    Avenida Colombia<br>
+    Mocoa<br>
+    Teléfono: 3209787169<br><br>
+    Factura Simplificada
+  </div>
+
+  <div class="info-grid">
+    <div class="info-col">
+      Factura:<br>
+      Caja:<br>
+      Fecha:
+    </div>
+    <div class="info-col">
+      MC/{{VENTA_ID}}<br>
+      1<br>
+      {{FECHA}}
+    </div>
+    <div class="info-col">
+      Mesa:<br>
+      Lote:<br>
+      Hora:
+    </div>
+    <div class="info-col">
+      0<br>
+      {{LOTE}}<br>
+      {{HORA}}
+    </div>
+  </div>
+
+  <table>
+    <tr>
+      <th style="width: 45%;">Descripción</th>
+      <th style="width: 15%;" class="center">Und</th>
+      <th style="width: 20%;" class="right">Precio</th>
+      <th style="width: 20%;" class="right">Importe</th>
+    </tr>
+    {{ITEMS_FACTURA}}
+  </table>
+  <div class="line"></div>
+  
+  <table class="totals-table">
+    <tr>
+      <td class="right" style="width: 60%;">Base Imponible:</td>
+      <td class="right">{{SUBTOTAL}}</td>
+    </tr>
+    <tr>
+      <td class="right">IVA 0%:</td>
+      <td class="right">0,00</td>
+    </tr>
+    <tr>
+      <td class="right tot-row">TOTAL:</td>
+      <td class="right tot-row">{{TOTAL}}</td>
+    </tr>
+  </table>
+
+  <div style="margin-top: 15px;">F.Pago: Efectivo</div>
+  <div style="margin-top: 20px; text-align: center; font-size: 10px;">¡Gracias por su compra!</div>
+  <div style="height: 30px;"></div>
+</body>
+</html>

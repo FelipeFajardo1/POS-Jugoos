@@ -232,7 +232,7 @@ ipcMain.handle('obtener-productos', (event, seccionId) => {
 });
 
 // 💳 REGISTRAR VENTA
-ipcMain.handle('registrar-venta', (event, items) => {
+ipcMain.handle('registrar-venta', (event, { items }) => {
   try {
     const jornada = db.prepare("SELECT * FROM jornadas_caja WHERE estado = 'ABIERTA'").get();
 
@@ -246,8 +246,8 @@ ipcMain.handle('registrar-venta', (event, items) => {
     }
 
     // Calcular total
-    const total = items.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
-
+    let total = items.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+    
     // Crear venta
     const result = db.prepare(`
       INSERT INTO ventas (jornada_id, total, metodo_pago, fecha)
@@ -258,10 +258,12 @@ ipcMain.handle('registrar-venta', (event, items) => {
 
     // Guardar detalles
     items.forEach(item => {
+      // Si el id es nulo, significa que es un cargo extra representado como item
+      const pId = item.id || null;
       db.prepare(`
         INSERT INTO venta_detalle (venta_id, producto_id, cantidad, precio)
         VALUES (?, ?, ?, ?)
-      `).run(ventaId, item.id, item.cantidad, item.precio);
+      `).run(ventaId, pId, item.cantidad, item.precio);
     });
 
     return {
@@ -273,6 +275,122 @@ ipcMain.handle('registrar-venta', (event, items) => {
     console.error(err);
     return { success: false, message: 'Error al registrar venta' };
   }
+});
+
+// IMPRIMIR FACTURA Y COMANDA
+ipcMain.handle('imprimir-factura', async (event, data) => {
+  return new Promise(async (resolve) => {
+    try {
+      const { items, total, ventaId } = data;
+      
+      const now = new Date();
+      const fechaFormat = now.toLocaleDateString('es-CO');
+      const horaFormat = now.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', hour12: true });
+      
+      let itemsComandaStr = '';
+      let itemsFacturaStr = '';
+      
+      items.forEach(i => {
+        itemsComandaStr += '<tr><td valign="top" class="center">' + i.cantidad + '</td><td valign="top">' + i.nombre.toUpperCase() + '</td></tr>';
+        itemsFacturaStr += '<tr><td valign="top">' + i.nombre.toUpperCase() + '</td><td valign="top" class="center">' + i.cantidad + '</td><td valign="top" class="right">' + i.precio.toLocaleString('es-CO') + '</td><td valign="top" class="right">' + (i.precio * i.cantidad).toLocaleString('es-CO') + '</td></tr>';
+      });
+
+      let htmlComanda = fs.readFileSync(path.join(__dirname, 'templates', 'comanda.html'), 'utf8');
+      htmlComanda = htmlComanda
+        .replace('{{FECHA}}', fechaFormat)
+        .replace('{{HORA}}', horaFormat)
+        .replace('{{VENTA_ID}}', ventaId)
+        .replace('{{ITEMS_COMANDA}}', itemsComandaStr);
+
+      let htmlFactura = fs.readFileSync(path.join(__dirname, 'templates', 'factura.html'), 'utf8');
+      htmlFactura = htmlFactura
+        .replace('{{FECHA}}', fechaFormat)
+        .replace('{{HORA}}', horaFormat)
+        .replace('{{LOTE}}', '6896')
+        .replace('{{VENTA_ID}}', ventaId)
+        .replace('{{ITEMS_FACTURA}}', itemsFacturaStr)
+        .replace('{{SUBTOTAL}}', total.toLocaleString('es-CO'))
+        .replace('{{TOTAL}}', total.toLocaleString('es-CO'));
+
+      const imprimirHTML = (html, delay = 0) => {
+        return new Promise((res) => {
+          setTimeout(() => {
+            let printWindow = new BrowserWindow({
+              show: false,
+              width: 300, 
+              webPreferences: { nodeIntegration: false }
+            });
+            printWindow.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
+            printWindow.webContents.on('did-finish-load', () => {
+              printWindow.webContents.print({
+                silent: true,
+                margins: { marginType: 'printableArea' }
+              }, (success, failureReason) => {
+                printWindow.close();
+                res({ success, failureReason });
+              });
+            });
+          }, delay);
+        });
+      };
+
+      await imprimirHTML(htmlComanda, 0);
+      await imprimirHTML(htmlFactura, 800);
+
+      resolve({ success: true, message: 'Impresión completada' });
+    } catch (err) {
+      console.error('Error preparando impresión: ', err);
+      resolve({ success: false, message: err.message });
+    }
+  });
+});
+
+// IMPRIMIR ARQUEO
+ipcMain.handle('imprimir-arqueo', async (event, data) => {
+  return new Promise(async (resolve) => {
+    try {
+      const { caja, lote, ganancias } = data;
+      
+      const now = new Date();
+      const fechaFormat = now.toLocaleDateString('es-CO');
+      const horaFormat = now.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+      let htmlArqueo = fs.readFileSync(path.join(__dirname, 'templates', 'arqueo.html'), 'utf8');
+      htmlArqueo = htmlArqueo
+        .replace('{{CAJA}}', caja || '1')
+        .replace('{{LOTE}}', lote || '6895')
+        .replace('{{FECHA}}', fechaFormat)
+        .replace('{{HORA}}', horaFormat)
+        .replace('{{GANANCIAS}}', ganancias.toLocaleString('es-CO'));
+
+      const imprimirHTML = (html) => {
+        return new Promise((res) => {
+          let printWindow = new BrowserWindow({
+            show: false,
+            width: 300, 
+            webPreferences: { nodeIntegration: false }
+          });
+          printWindow.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(html));
+          printWindow.webContents.on('did-finish-load', () => {
+            printWindow.webContents.print({
+              silent: true,
+              margins: { marginType: 'printableArea' }
+            }, (success, failureReason) => {
+              printWindow.close();
+              res({ success, failureReason });
+            });
+          });
+        });
+      };
+
+      await imprimirHTML(htmlArqueo);
+
+      resolve({ success: true, message: 'Arqueo impreso' });
+    } catch (err) {
+      console.error('Error imprimiendo arqueo: ', err);
+      resolve({ success: false, message: err.message });
+    }
+  });
 });
 
 // 🔴 CERRAR APLICACIÓN

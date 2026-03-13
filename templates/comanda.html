@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    @page { margin: 0; }
+    body { font-family: monospace; font-size: 14px; margin: 0; padding: 10px; width: 70mm; color: #000; }
+    .center { text-align: center; }
+    .bold { font-weight: bold; }
+    .line { border-bottom: 1px dashed #000; margin: 5px 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+    th { text-align: left; border-bottom: 1px solid #000; padding-bottom: 2px; }
+    td { text-align: left; padding: 2px 0; font-size: 14px; }
+    .right { text-align: right; }
+    .mb { margin-bottom: 10px; }
+  </style>
+</head>
+<body>
+  <div class="center bold mb">IMPRESION DE COMANDA<br>GENERACOMANDA</div>
+  
+  <div style="font-size: 12px; margin-bottom: 10px;">
+    Fecha: {{FECHA}} Factura S: MC/{{VENTA_ID}}<br>
+    Hora: {{HORA}} Mesa: /0
+  </div>
+
+  <table>
+    <tr>
+      <th style="width: 20%;">Unid.</th>
+      <th style="width: 80%;">Descripción</th>
+    </tr>
+    {{ITEMS_COMANDA}}
+  </table>
+  <div class="line"></div>
+  <div style="height: 30px;"></div>
+</body>
+</html>

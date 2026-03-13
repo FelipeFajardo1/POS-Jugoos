@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('caja', {
   abrirJornada: (data) => ipcRenderer.invoke('abrir-jornada', data),
   cerrarJornada: () => ipcRenderer.invoke('cerrar-jornada'),
   obtenerVentasJornada: () => ipcRenderer.invoke('obtener-ventas-jornada'),
+  imprimirArqueo: (data) => ipcRenderer.invoke('imprimir-arqueo', data)
 });
 
 contextBridge.exposeInMainWorld('productos', {
@@ -20,6 +21,7 @@ contextBridge.exposeInMainWorld('productos', {
 
 contextBridge.exposeInMainWorld('ventas', {
   registrar: (items) => ipcRenderer.invoke('registrar-venta', items),
+  imprimirFactura: (data) => ipcRenderer.invoke('imprimir-factura', data)
 });
 
 contextBridge.exposeInMainWorld('adminApi', {
